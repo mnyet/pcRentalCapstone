@@ -6,3 +6,5 @@ The project is composed of two programs:
 - pcRentalScreenRestraint - stands as the client side
 
 yes, i am really bad at naming things.
+
+this is supposed to be a capstone project, but seeing it's potentials, i don't see one.
