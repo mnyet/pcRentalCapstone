@@ -33,6 +33,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 
 public class userTable extends JFrame {
 	
@@ -73,6 +74,9 @@ public class userTable extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("adminPanelIcon.png"));
+		setIconImage(logo.getImage());
 		
 		setTitle("Manage Users");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -181,9 +185,8 @@ public class userTable extends JFrame {
 			
 		} catch (ClassNotFoundException | SQLException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "No Connection to the Database! Exiting...");
-			System.exit(0);
+			//e1.printStackTrace();
+			System.out.println("No Connection");
 		}
 	}
 	
@@ -224,6 +227,7 @@ public class userTable extends JFrame {
 			JOptionPane.showMessageDialog(null, "Please select a user first!");
 		} catch(NullPointerException e1) {
 			//wala kasi pagod nako
+			System.out.println("No Connection");
 		}
 	}
 	
@@ -265,9 +269,8 @@ public class userTable extends JFrame {
 			
 		} catch (ClassNotFoundException | SQLException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			JOptionPane.showMessageDialog(null, "No Connection to the Database! Exiting...");
-			System.exit(0);
+			//e1.printStackTrace();
+			System.out.println("No Connection");
 		}
 		
 	}

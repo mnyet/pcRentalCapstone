@@ -50,7 +50,8 @@ public class optimizedConnectionTest {
 			con = DriverManager.getConnection("jdbc:mysql://" + dbNetwork + "/" + dbDatabaseName +"", "" + dbUsername + "", "" + dbPassword + "");
 		}
 		catch(Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "No Connection to the Database!");
 		}
 		
 		return con;

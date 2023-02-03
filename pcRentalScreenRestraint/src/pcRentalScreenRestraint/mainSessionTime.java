@@ -42,6 +42,7 @@ public class mainSessionTime extends JFrame {
 	private static JLabel lblTimer;
 	private static Connection con = optimizedConnectionTest.getConnection();
 	ImageIcon icon;
+	private JButton btnAboutUser;
 	
 	/*
 	 * 
@@ -136,6 +137,7 @@ public class mainSessionTime extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				dispose();
 				timerStop();
+				mainScreenRestraint.timerCountdown(300);
 			}
 		});
 		/*btnNewButton.addActionListener(new ActionListener() {
@@ -146,7 +148,7 @@ public class mainSessionTime extends JFrame {
 				timerRun();
 			}
 		});*/
-		btnNewButton.setBounds(211, 75, 109, 58);
+		btnNewButton.setBounds(211, 75, 109, 23);
 		contentPane.add(btnNewButton);
 		
 		lblTimer = new JLabel("00H:00M:00S");
@@ -154,6 +156,16 @@ public class mainSessionTime extends JFrame {
 		lblTimer.setForeground(Color.WHITE);
 		lblTimer.setBounds(10, 75, 191, 53);
 		contentPane.add(lblTimer);
+		
+		btnAboutUser = new JButton("About " + user);
+		btnAboutUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				aboutUser gotoabout = new aboutUser(user);
+				gotoabout.setVisible(true);
+			}
+		});
+		btnAboutUser.setBounds(211, 105, 109, 23);
+		contentPane.add(btnAboutUser);
 	}
 	
 	public void getUserBalance(String user) {
@@ -297,7 +309,11 @@ public class mainSessionTime extends JFrame {
 			}
 			//con.close();
 		} catch (Exception e1){
-			e1.printStackTrace();
+			//disconnection errors comes from here tandaan mo to janber utang na loob ang hirap hanapin nito
+			//ang error dito is pag nadisconnect yung mga client pc sa server.
+			dispose();
+			timerStop();
+			mainScreenRestraint.timerCountdown(300);
 		}
 		
 		return finalBalance;

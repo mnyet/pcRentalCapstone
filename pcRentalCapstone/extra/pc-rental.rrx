@@ -1,0 +1,33 @@
+<?xml version="1.0" standalone="yes"?>
+<RemoteRebootX>
+  <Grid>
+    <columnHost>add-computers-here</columnHost>
+    <columnMACAddress />
+    <columnWakeOnLANBroadcastAndPort>255.255.255.255:7</columnWakeOnLANBroadcastAndPort>
+    <columnPingReply />
+    <columnRebootMessages />
+    <columnWSUSMessages />
+    <columnWSUSInstallationProgress />
+    <columnPingCheckBox>False</columnPingCheckBox>
+    <columnLastBootTime />
+    <columnSQLStatus />
+    <columnUserName />
+    <columnPassword />
+    <columnDomain />
+    <columnLogonAccount />
+    <columnJobQueue />
+    <columnDiskSpace />
+    <columnServices />
+    <PatchDeployment />
+    <PatchInstallerFile />
+    <PatchParamaters />
+    <columnCustomPsExec />
+    <columnLocalProcess />
+    <columnScheduledTask />
+    <columnScheduledTime />
+    <columnTaskRecurrence />
+    <columnAllMessages />
+    <columnNotes />
+    <columnRebootCheckBox>False</columnRebootCheckBox>
+  </Grid>
+</RemoteRebootX>
