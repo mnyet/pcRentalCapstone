@@ -84,6 +84,7 @@ public class initialSetup extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 		setResizable(false);
 		setTitle("Initial Setup");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

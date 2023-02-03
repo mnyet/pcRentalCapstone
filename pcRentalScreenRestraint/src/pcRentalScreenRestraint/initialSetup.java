@@ -26,9 +26,11 @@ public class initialSetup extends JFrame {
 	private JTextField textFieldIPAdress;
 	private JTextField textFieldDbName;
 	private JTextField textFieldAdminPin;
-
+	private JTextField textFieldShopName;
+	
 	/**
 	 * Launch the application.
+	 * hi
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -59,15 +61,17 @@ public class initialSetup extends JFrame {
 	public static void skipCreateFile() {
 		mainScreenRestraint startDashboard = new mainScreenRestraint();
 		mainScreenRestraint.closeExplorer();
+		mainScreenRestraint.timerCountdown(300);
 		startDashboard.setVisible(true);
 	}
 	
-	public void createFile(String configNetwork, String configDatabase, String configPin) {
+	public void createFile(String configNetwork, String configDatabase, String configPin, String configName) {
 		try {
 			FileWriter createData = new FileWriter("networkconfig.dat");
 			createData.write(configNetwork + "\n");
 			createData.write(configDatabase + "\n");
-			createData.write(configPin);
+			createData.write(configPin + "\n");
+			createData.write(configName);
 			createData.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -88,7 +92,7 @@ public class initialSetup extends JFrame {
 		setResizable(false);
 		setTitle("Initial Setup");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 334, 332);
+		setBounds(100, 100, 334, 413);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -125,13 +129,14 @@ public class initialSetup extends JFrame {
 				String savedNetwork = textFieldIPAdress.getText();
 				String savedDatabaseName = textFieldDbName.getText();
 				String savedAdminPin = textFieldAdminPin.getText();
-				createFile(savedNetwork, savedDatabaseName, savedAdminPin);
+				String savedShopName = textFieldShopName.getText();
+				createFile(savedNetwork, savedDatabaseName, savedAdminPin, savedShopName);
 				dispose();
 				JOptionPane.showMessageDialog(null, "Configurations saved, Enjoy the program!");
 				skipCreateFile();
 			}
 		});
-		btnSave.setBounds(212, 249, 89, 23);
+		btnSave.setBounds(25, 322, 276, 23);
 		contentPane.add(btnSave);
 		
 		JLabel lblDbExitPin = new JLabel("Exit Pin [ADMIN]:");
@@ -141,7 +146,17 @@ public class initialSetup extends JFrame {
 		textFieldAdminPin = new JTextField();
 		textFieldAdminPin.setText("0000");
 		textFieldAdminPin.setColumns(10);
-		textFieldAdminPin.setBounds(121, 250, 89, 20);
+		textFieldAdminPin.setBounds(121, 250, 180, 20);
 		contentPane.add(textFieldAdminPin);
+		
+		JLabel lblShopName = new JLabel("Name of Shop:");
+		lblShopName.setBounds(25, 290, 86, 14);
+		contentPane.add(lblShopName);
+		
+		textFieldShopName = new JTextField();
+		textFieldShopName.setText("bear");
+		textFieldShopName.setColumns(10);
+		textFieldShopName.setBounds(121, 287, 180, 20);
+		contentPane.add(textFieldShopName);
 	}
 }

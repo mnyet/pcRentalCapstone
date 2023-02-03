@@ -24,12 +24,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.awt.Color;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
@@ -37,12 +40,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class pcRentalDashboard extends JFrame {
 
 	private JPanel contentPane;
 	private static JTable tblData;
+	private static Runtime rtm = Runtime.getRuntime();
 	private static Connection con = optimizedConnectionTest.getConnection();
 
 	/**
@@ -56,7 +62,8 @@ public class pcRentalDashboard extends JFrame {
 					frame.setVisible(true);
 					showData();
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					System.out.println("No Connection");
 				}
 			}
 		});
@@ -73,6 +80,9 @@ public class pcRentalDashboard extends JFrame {
 			e1.printStackTrace();
 		}
 		
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("adminPanelIcon.png"));
+		setIconImage(logo.getImage());
+		
 		setTitle("PC Rental Admin Dashboard");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,11 +97,9 @@ public class pcRentalDashboard extends JFrame {
 		menuBar.setBounds(0, 0, 664, 22);
 		contentPane.add(menuBar);
 		
-		JMenu mnOptions = new JMenu("Options");
-		menuBar.add(mnOptions);
-		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Log Out");
-		mnOptions.add(mntmNewMenuItem);
+		JMenu mnDev = new JMenu("Bear 2022-2023");
+		mnDev.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+		menuBar.add(mnDev);
 		
 		JLabel lblLatestTransactions = new JLabel("Latest Transactions:");
 		lblLatestTransactions.setBounds(191, 33, 144, 22);
@@ -106,44 +114,67 @@ public class pcRentalDashboard extends JFrame {
 		JLabel lblGreetings = new JLabel("Welcome Admin!");
 		lblGreetings.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGreetings.setForeground(Color.WHITE);
-		lblGreetings.setBounds(10, 53, 161, 40);
+		lblGreetings.setBounds(10, 41, 161, 40);
 		panel.add(lblGreetings);
 		
 		JLabel lblWhatDoYou = new JLabel("What do you want to do?");
 		lblWhatDoYou.setHorizontalAlignment(SwingConstants.CENTER);
 		lblWhatDoYou.setForeground(Color.WHITE);
-		lblWhatDoYou.setBounds(10, 96, 161, 40);
+		lblWhatDoYou.setBounds(10, 84, 161, 40);
 		panel.add(lblWhatDoYou);
 		
 		JButton btnRefreshTable = new JButton("Refresh Table");
 		btnRefreshTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showData();
+				try {
+					showData();
+				} catch(Exception e1) {
+					JOptionPane.showMessageDialog(null, "No Connection to the Database!");
+				}
 			}
 		});
-		btnRefreshTable.setBounds(10, 147, 161, 35);
+		btnRefreshTable.setBounds(10, 135, 161, 35);
 		panel.add(btnRefreshTable);
 		
 		JButton btnAddNewUser = new JButton("Add new user");
 		btnAddNewUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				userCreate createuser = new userCreate();
-				createuser.setVisible(true);
+				try {
+					showData(); //checks for connection, and if wala magpprompt lang siya
+					userCreate createuser = new userCreate();
+					createuser.setVisible(true);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "No Connection to the Database!");
+				}
 			}
 		});
-		btnAddNewUser.setBounds(10, 193, 161, 35);
+		btnAddNewUser.setBounds(10, 181, 161, 35);
 		panel.add(btnAddNewUser);
 		
 		JButton btnManageUsers = new JButton("Manage users");
 		btnManageUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				userTable opentopup = new userTable();
-				opentopup.setVisible(true);
-				userTable.showData();
+				try {
+					showData(); //checks for connection, and if wala magpprompt lang siya
+					userTable opentopup = new userTable();
+					userTable.showData();
+					opentopup.setVisible(true);
+				} catch(Exception e1) {
+					JOptionPane.showMessageDialog(null, "No Connection to the Database!");
+				}
 			}
 		});
-		btnManageUsers.setBounds(10, 239, 161, 35);
+		btnManageUsers.setBounds(10, 227, 161, 35);
 		panel.add(btnManageUsers);
+		
+		JButton btnManagePC = new JButton("Manage PCs");
+		btnManagePC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				openRRX();
+			}
+		});
+		btnManagePC.setBounds(10, 273, 161, 35);
+		panel.add(btnManagePC);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(191, 66, 452, 282);
@@ -151,6 +182,16 @@ public class pcRentalDashboard extends JFrame {
 		
 		tblData = new JTable();
 		scrollPane.setViewportView(tblData);
+	}
+	
+	public static void openRRX() {
+		String dir = System.getProperty("user.dir");
+		try {
+			rtm.exec(dir + "\\extra\\run-rrx.bat");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	//this method shows the details of the table
@@ -183,8 +224,6 @@ public class pcRentalDashboard extends JFrame {
 			} catch (ClassNotFoundException | SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "No Connection to the Database! Exiting...");
-				System.exit(0);
 			}
 		}
 }

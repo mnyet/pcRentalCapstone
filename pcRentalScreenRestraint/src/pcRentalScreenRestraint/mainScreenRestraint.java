@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +34,7 @@ public class mainScreenRestraint {
 
 	private JFrame frame;
 	private static Runtime rtm = Runtime.getRuntime();
+	private static Timer timer;
 	private JTextField textFieldUsername;
 	private JPasswordField textFieldPassword;
 	private JButton tempExit;
@@ -40,8 +43,27 @@ public class mainScreenRestraint {
 	private static JButton btnLoginButton;
 	private JLabel lblPasswordCheck;
 	private static JPanel panel_1;
+	private static JLabel lblCountDown;
 	private static Connection con = optimizedConnectionTest.getConnection();
+	private static String shopName = getShopName("");
 	ImageIcon image;
+	
+	public static String getShopName(String name) {
+		String shop = "";
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("networkconfig.dat"));
+			br.readLine();
+			br.readLine();
+			br.readLine();
+			shop = br.readLine();
+			br.close();
+			
+		} catch(Exception e) {
+			
+		}
+		
+		return shop;
+	}
 	
 	/**
 	 * Launch the application.
@@ -53,6 +75,7 @@ public class mainScreenRestraint {
 				try {
 					mainScreenRestraint window = new mainScreenRestraint();
 					window.frame.setVisible(true);
+					timerCountdown(300);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -108,7 +131,7 @@ public class mainScreenRestraint {
 		panel.setLayout(null);
 		
 		panel_1 = new JPanel();
-		panel_1.setBounds(82, 335, 241, 23);
+		panel_1.setBounds(82, 369, 241, 23);
 		panel_1.setBackground(new Color(0, 0, 0, 0));
 		panel.add(panel_1);
 		panel_1.setLayout(null);
@@ -148,11 +171,20 @@ public class mainScreenRestraint {
 			}
 		});
 		
+		/*
 		tempExit = new JButton("Exit ni bear");
-		tempExit.setBounds(82, 377, 115, 23);
+		tempExit.setBounds(82, 417, 115, 23);
 		panel.add(tempExit);
+		tempExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				openExplorer();
+				System.exit(0);
+			}
+		});
+		*/
 		
-		JLabel lblGreetings = new JLabel("Welcome to Bear");
+		//kung gusto mong iedit to bear sa design tanggalin mo muna yung shopName kasi nagccrash yung ide.
+		JLabel lblGreetings = new JLabel("Welcome to " + shopName + "!");
 		lblGreetings.setForeground(Color.WHITE);
 		lblGreetings.setBounds(82, 194, 241, 14);
 		panel.add(lblGreetings);
@@ -167,12 +199,17 @@ public class mainScreenRestraint {
 		});
 		btnAdminPass.setBounds(176, 301, 84, 23);
 		panel.add(btnAdminPass);
-		tempExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				openExplorer();
-				System.exit(0);
-			}
-		});
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(Color.BLACK);
+		panel_2.setBounds(82, 335, 241, 23);
+		panel.add(panel_2);
+		panel_2.setLayout(null);
+		
+		lblCountDown = new JLabel("");
+		lblCountDown.setForeground(Color.YELLOW);
+		lblCountDown.setBounds(0, 0, 241, 23);
+		panel_2.add(lblCountDown);
 		
 		lblNewLabel = new JLabel("New label");
 		//ppull yung image dito galing sa res folder.
@@ -204,6 +241,28 @@ public class mainScreenRestraint {
 		System.out.println("Command: " + bld.command());
 	}
 	
+	public static void timerCountdown(int seconds) {
+		timer = new Timer();
+		TimerTask tt = new TimerTask() {
+			int timeSec = seconds;
+			@Override
+			public void run() {
+				if(timeSec <= 0) {
+					try {
+						rtm.exec("shutdown -s -t 5");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					lblCountDown.setText("You only have " + timeSec + " seconds left before shutdown.");
+					timeSec--;
+				}			
+			}	
+		};
+		timer.scheduleAtFixedRate(tt, 1000, 1000);
+	}
+	
 	Runnable loginAtt = new Runnable() {
 		@Override
 		public void run() {
@@ -215,6 +274,7 @@ public class mainScreenRestraint {
 				 String fetchUser = textFieldUsername.getText();
 				 
 				 if(rs.next()) {
+					 timer.cancel();
 					 System.out.println("screen restraint connection: " + con);
 					 openExplorer();
 					 frame.dispose();
@@ -229,6 +289,7 @@ public class mainScreenRestraint {
 				 
 				 
 			} catch(Exception e) {
+				e.printStackTrace();
 				System.out.print(e);
 				panel_1.setBackground(Color.BLACK);
 				lblPasswordCheck.setForeground(Color.RED);

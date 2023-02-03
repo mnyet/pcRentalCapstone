@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JPasswordField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
@@ -29,6 +30,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class userCreate extends JFrame {
 
@@ -74,6 +77,9 @@ public class userCreate extends JFrame {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
+		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("adminPanelIcon.png"));
+		setIconImage(logo.getImage());
 	
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setTitle("Create new user");
@@ -123,7 +129,31 @@ public class userCreate extends JFrame {
 		contentPane.add(lblEmail);
 		
 		textFieldPhoneNo = new JTextField();
-		textFieldPhoneNo.setColumns(10);
+		//this is why i love indian people.
+		textFieldPhoneNo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent evt) {
+				String phoneNumber = textFieldPhoneNo.getText();
+				int length = phoneNumber.length();
+				
+				
+				if(evt.getKeyChar() >= '0' && evt.getKeyChar()<='9') {
+					if(length < 11) {
+						textFieldPhoneNo.setEditable(true);
+					} else {
+						textFieldPhoneNo.setEditable(false);
+					}
+				} else {
+					if(evt.getExtendedKeyCode()==KeyEvent.VK_BACK_SPACE || evt.getExtendedKeyCode()==KeyEvent.VK_DELETE) {
+						textFieldPhoneNo.setEditable(true);
+					} else {
+						textFieldPhoneNo.setEditable(false);
+					}
+				}
+				
+			}
+		});
+		textFieldPhoneNo.setColumns(11);
 		textFieldPhoneNo.setBounds(95, 132, 250, 26);
 		contentPane.add(textFieldPhoneNo);
 		
