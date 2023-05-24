@@ -29,6 +29,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -173,27 +175,40 @@ public class userCreate extends JFrame {
 		JButton btnRegister = new JButton("Register");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(
-					textFieldUsername.getText().isEmpty() 
-						|| passwordFieldUserPass.getText().isEmpty() 
-						|| textFieldEmail.getText().isEmpty()
-						|| textFieldPhoneNo.getText().isEmpty()
-						|| textFieldIntTopup.getText().isEmpty()
-						){
-					JOptionPane.showMessageDialog(null, "Please fill all the required fields!");
-				} else {
-					if(numberCheck(textFieldPhoneNo.getText()) != true || numberCheck(textFieldIntTopup.getText()) != true) {
-						JOptionPane.showMessageDialog(null, "Please enter only numbers in Phone Number and Initial Topup!");
-					} else {
-						if(checkUsername(textFieldUsername.getText()) != true) {
-							//proceeds to registering the user if there isn't an existing username.
-							String multiplierString = (String) comboBox.getSelectedItem();
-							int multiplierInt = Integer.parseInt(multiplierString);
-							registerUser(multiplierInt);
-						} else {
-							JOptionPane.showMessageDialog(null, "Username already exists!");
-						}
+				try {
+					String regex = "^(.+)@(.+)$";
+					Pattern pattern = Pattern.compile(regex);
+					Matcher matcher = pattern.matcher(textFieldEmail.getText());
+					float numCheckPhonenum = Float.parseFloat(textFieldPhoneNo.getText());
+					float numCheckIntTopup = Float.parseFloat(textFieldIntTopup.getText());
+					
+					if(
+							textFieldUsername.getText().isEmpty() 
+								|| passwordFieldUserPass.getText().isEmpty() 
+								|| textFieldEmail.getText().isEmpty()
+								|| textFieldPhoneNo.getText().isEmpty()
+								|| textFieldIntTopup.getText().isEmpty()
+								){
+							JOptionPane.showMessageDialog(null, "Please fill all the required fields!");
+						} 
+					else if(numCheckIntTopup > 1000 || numCheckIntTopup < 10) {
+						JOptionPane.showMessageDialog(null, "No top-ups between 10 and 1000!");
 					}
+					else if(matcher.matches() == false) {
+						JOptionPane.showMessageDialog(null, "Please enter a valid email format!");
+					}
+					else {
+							if(checkUsername(textFieldUsername.getText()) != true) {
+								//proceeds to registering the user if there isn't an existing username.
+								String multiplierString = (String) comboBox.getSelectedItem();
+								int multiplierInt = Integer.parseInt(multiplierString);
+								registerUser(multiplierInt);
+							} else {
+								JOptionPane.showMessageDialog(null, "Username already exists!");
+							}
+						}
+				} catch(NumberFormatException e1){
+					JOptionPane.showMessageDialog(null, "Please enter only numbers in phone number and Int Topup!");
 				}
 				
 			}
@@ -224,8 +239,9 @@ public class userCreate extends JFrame {
 		
 	}
 	
+	/*
 	public static boolean numberCheck(String entry) {
-		boolean isNumber = false;
+		boolean isNumber;
 		try {
 		     Integer.parseInt(entry);
 		     isNumber = true;
@@ -236,6 +252,8 @@ public class userCreate extends JFrame {
 		
 		return isNumber;
 	}
+	
+	*/
 	
 	public static void registerUser(int rate) {
 		String registerUsername = textFieldUsername.getText();
@@ -265,6 +283,11 @@ public class userCreate extends JFrame {
 			//this'll execute the query
 			st.executeUpdate(query);
 			JOptionPane.showMessageDialog(null, "User Registered!");
+			textFieldUsername.setText("");
+			textFieldEmail.setText("");
+			textFieldPhoneNo.setText("");
+			textFieldIntTopup.setText("");
+			passwordFieldUserPass.setText("");
 			//userTable.showData();
 		} catch (ClassNotFoundException | SQLException e1) {
 			// TODO Auto-generated catch block

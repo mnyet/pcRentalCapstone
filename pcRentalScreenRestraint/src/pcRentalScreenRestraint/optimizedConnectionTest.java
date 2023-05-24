@@ -6,34 +6,32 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Base64;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
 
 public class optimizedConnectionTest {
 	static Connection con = null;
-	private static String dbNetwork = getDataFromFile("", null);
-	private static String dbDatabaseName = getDataFromFile(null, "");
-	private static String dbUsername = "root";
-	private static String dbPassword = "";
+	private static String dbNetwork;
+	private static String dbDatabaseName;
+	private static String dbUsername;
+	private static String dbPassword;
+	private static String hashKey;
 	
-	public static String getDataFromFile(String net, String db) {
-		String network = "";
-		String database = "";
+	public static void getDataFromFile() {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("networkconfig.dat"));
-			network = br.readLine();
-			database = br.readLine();
+			hashKey = br.readLine(); //line 1
+			dbNetwork = decrypt(br.readLine(), hashKey); //line 2
+			dbDatabaseName = decrypt(br.readLine(), hashKey); //line 3
+			dbUsername = decrypt(br.readLine(), hashKey); //line 4
+			dbPassword = decrypt(br.readLine(), hashKey); //line 5
 			br.close();
 			
 		} catch(Exception e) {
-			JOptionPane.showMessageDialog(null, "You shouldn't be here.");
-			System.exit(0);
-		}
-		
-		if(net == null) {
-			return database;
-		} else {
-			return network;
+			JOptionPane.showMessageDialog(null, "Config File has been modified which can cause system instability.");
 		}
 
 	}
@@ -41,12 +39,14 @@ public class optimizedConnectionTest {
 	public static Connection getConnection() {
 		if (con != null) return con;
 		
-		return getConnection("pcrental", "root", "");
+		return getConnection("", "", "");
 	}
 	
 	private static Connection getConnection(String db_name, String user_name, String password) {
 		try {
+			getDataFromFile();
 			Class.forName("com.mysql.cj.jdbc.Driver");
+			//System.out.println(dbNetwork + dbDatabaseName + dbUsername + dbPassword );
 			con = DriverManager.getConnection("jdbc:mysql://" + dbNetwork + "/" + dbDatabaseName +"", "" + dbUsername + "", "" + dbPassword + "");
 		}
 		catch(Exception e) {
@@ -56,6 +56,15 @@ public class optimizedConnectionTest {
 		
 		return con;
 	}
+	
+	//does the decryption
+    public static String decrypt(String encrypted, String encryptionKey) throws Exception {
+    	Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes(), "AES");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+        return new String(decryptedBytes);
+    }
 	
 	/*
 	 * 

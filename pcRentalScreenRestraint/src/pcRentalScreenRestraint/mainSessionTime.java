@@ -43,6 +43,7 @@ public class mainSessionTime extends JFrame {
 	private static Connection con = optimizedConnectionTest.getConnection();
 	ImageIcon icon;
 	private JButton btnAboutUser;
+	private screenLockWhileSession scrLock = null;
 	
 	/*
 	 * 
@@ -118,7 +119,7 @@ public class mainSessionTime extends JFrame {
 		
 		getUserBalance(user);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 357, 188);
+		setBounds(100, 100, 357, 223);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -137,7 +138,6 @@ public class mainSessionTime extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				dispose();
 				timerStop();
-				mainScreenRestraint.timerCountdown(300);
 			}
 		});
 		/*btnNewButton.addActionListener(new ActionListener() {
@@ -166,6 +166,16 @@ public class mainSessionTime extends JFrame {
 		});
 		btnAboutUser.setBounds(211, 105, 109, 23);
 		contentPane.add(btnAboutUser);
+		
+		JButton btnScreenLock = new JButton("Lock Screen");
+		btnScreenLock.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				scrLock = new screenLockWhileSession(user);
+				scrLock.setVisible(true);
+			}
+		});
+		btnScreenLock.setBounds(211, 135, 109, 23);
+		contentPane.add(btnScreenLock);
 	}
 	
 	public void getUserBalance(String user) {
@@ -269,6 +279,11 @@ public class mainSessionTime extends JFrame {
 		isRunning = false;
 		closeExplorer();
 		mainScreenRestraint backToLock = new mainScreenRestraint();
+		mainScreenRestraint.timerCountdown(300);
+		if(scrLock != null) {
+			scrLock.dispose();
+			scrLock = null;
+		}
 		dispose();
 		backToLock.setVisible(true);
 	}
@@ -313,7 +328,6 @@ public class mainSessionTime extends JFrame {
 			//ang error dito is pag nadisconnect yung mga client pc sa server.
 			dispose();
 			timerStop();
-			mainScreenRestraint.timerCountdown(300);
 		}
 		
 		return finalBalance;

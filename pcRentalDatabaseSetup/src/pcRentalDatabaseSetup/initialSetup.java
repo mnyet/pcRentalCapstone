@@ -1,4 +1,4 @@
-package pcRentalCapstone;
+package pcRentalDatabaseSetup;
 
 import java.awt.EventQueue;
 import java.io.BufferedReader;
@@ -57,7 +57,7 @@ public class initialSetup extends JFrame {
 							e.printStackTrace();
 						}
 					} else {
-						JOptionPane.showMessageDialog(null, "Welcome Back, Admin!");
+						JOptionPane.showMessageDialog(null, "Yo!");
 						skipCreateFile();
 					}
 					
@@ -86,9 +86,8 @@ public class initialSetup extends JFrame {
     }
 	
 	public static void skipCreateFile() {
-		pcRentalDashboard startDashboard = new pcRentalDashboard();
+		setupDatabase startDashboard = new setupDatabase();
 		startDashboard.setVisible(true);
-		pcRentalDashboard.showData();
 	}
 	
 	public void createFile(String configNetwork, String configDatabase, String configUsername, String configPassword) {
@@ -117,8 +116,6 @@ public class initialSetup extends JFrame {
 	 * Create the frame.
 	 */
 	public initialSetup() {
-		ImageIcon logo = new ImageIcon(getClass().getClassLoader().getResource("adminPanelIcon.png"));
-		setIconImage(logo.getImage());
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {

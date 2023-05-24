@@ -94,7 +94,7 @@ public class userTable extends JFrame {
 				showData();
 			}
 		});
-		btnRefresh.setBounds(10, 31, 155, 35);
+		btnRefresh.setBounds(10, 31, 155, 20);
 		contentPane.add(btnRefresh);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -105,7 +105,7 @@ public class userTable extends JFrame {
 		scrollPane.setViewportView(tblData);
 		
 		textFindUser = new JTextField();
-		textFindUser.setBounds(10, 102, 155, 20);
+		textFindUser.setBounds(10, 87, 155, 20);
 		contentPane.add(textFindUser);
 		textFindUser.setColumns(10);
 		
@@ -113,7 +113,7 @@ public class userTable extends JFrame {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		JComboBox comboBox = new JComboBox(rates);
 		
-		comboBox.setBounds(119, 188, 46, 21);
+		comboBox.setBounds(119, 204, 46, 21);
 		contentPane.add(comboBox);
 		
 		JButton btnFindUser = new JButton("Find user");
@@ -122,36 +122,69 @@ public class userTable extends JFrame {
 				findUser();
 			}
 		});
-		btnFindUser.setBounds(10, 133, 155, 20);
+		btnFindUser.setBounds(10, 118, 155, 20);
 		contentPane.add(btnFindUser);
 		
 		JButton btnTopupUser = new JButton("Topup user");
 		btnTopupUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String multiplierString = (String) comboBox.getSelectedItem();
-				int multiplierInt = Integer.parseInt(multiplierString);
-				topupUser(multiplierInt);
+				try {
+					String multiplierString = (String) comboBox.getSelectedItem();
+					int multiplierInt = Integer.parseInt(multiplierString);
+					int topupAmountInt = Integer.parseInt(textTopupAmount.getText());
+					
+					if(topupAmountInt > 1000) {
+						JOptionPane.showMessageDialog(null, "Only Maximum of 1000!");
+					}
+					else if(topupAmountInt < 10) {
+						JOptionPane.showMessageDialog(null, "Only Minimum of 10!");
+					}
+					else {
+						topupUser(multiplierInt);
+					}
+				} catch(Exception e1){
+					System.out.println(e1);
+					JOptionPane.showMessageDialog(null, "Please enter numbers only!");
+				}
 			}
 		});
-		btnTopupUser.setBounds(10, 220, 155, 20);
+		btnTopupUser.setBounds(10, 236, 155, 20);
 		contentPane.add(btnTopupUser);
 		
 		textTopupAmount = new JTextField();
 		textTopupAmount.setColumns(10);
-		textTopupAmount.setBounds(10, 189, 102, 20);
+		textTopupAmount.setBounds(10, 205, 102, 20);
 		contentPane.add(textTopupAmount);
 		
 		lblTopup = new JLabel("Add user credits:");
-		lblTopup.setBounds(10, 164, 102, 14);
+		lblTopup.setBounds(10, 180, 102, 14);
 		contentPane.add(lblTopup);
 		
 		lblFindUser = new JLabel("Find user:");
-		lblFindUser.setBounds(10, 77, 155, 14);
+		lblFindUser.setBounds(10, 62, 155, 14);
 		contentPane.add(lblFindUser);
 		
 		lblRate = new JLabel("Rate:");
-		lblRate.setBounds(122, 164, 43, 14);
+		lblRate.setBounds(122, 180, 43, 14);
 		contentPane.add(lblRate);
+		
+		JButton btnResetPass = new JButton("Reset User Password");
+		btnResetPass.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					int selectedRow = tblData.getSelectedRow();
+					DefaultTableModel model = (DefaultTableModel)tblData.getModel();
+					String username = (String) model.getValueAt(selectedRow, 1);
+					//System.out.println(username);
+					resetPassword resPas = new resetPassword(username);
+					resPas.setVisible(true);
+				} catch (ArrayIndexOutOfBoundsException e) {
+					JOptionPane.showMessageDialog(null, "Please select a user first!");
+				}
+			}
+		});
+		btnResetPass.setBounds(10, 149, 155, 20);
+		contentPane.add(btnResetPass);
 	}
 	
 	
@@ -186,7 +219,8 @@ public class userTable extends JFrame {
 		} catch (ClassNotFoundException | SQLException e1) {
 			// TODO Auto-generated catch block
 			//e1.printStackTrace();
-			System.out.println("No Connection");
+			//System.out.println("No Connection");
+			System.out.println(e1);
 		}
 	}
 	
@@ -210,7 +244,7 @@ public class userTable extends JFrame {
 				String queryTopup = "update user_accounts set balance = " + setTopup + " where uid = " + userId + ";";
 				String queryTopupLog = "insert into user_transactions values("
 						+ "'" + username + "' ,"
-						+ "	" + addAmount + ","
+						+ "	" + addAmountTextField + ","
 						+ "	current_timestamp"
 						+ "	);";
 				//this'll execute the query
@@ -227,7 +261,9 @@ public class userTable extends JFrame {
 			JOptionPane.showMessageDialog(null, "Please select a user first!");
 		} catch(NullPointerException e1) {
 			//wala kasi pagod nako
-			System.out.println("No Connection");
+			//System.out.println("No Connection");
+			//System.out.println(e1);
+			//System.out.println("hi"); turns out wala namang ginagawa to gano hehe
 		}
 	}
 	
@@ -270,7 +306,8 @@ public class userTable extends JFrame {
 		} catch (ClassNotFoundException | SQLException e1) {
 			// TODO Auto-generated catch block
 			//e1.printStackTrace();
-			System.out.println("No Connection");
+			//System.out.println("No Connection");
+			System.out.println(e1);
 		}
 		
 	}

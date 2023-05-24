@@ -2,6 +2,7 @@ package pcRentalScreenRestraint;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JPanel;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
@@ -44,18 +48,22 @@ public class mainScreenRestraint {
 	private JLabel lblPasswordCheck;
 	private static JPanel panel_1;
 	private static JLabel lblCountDown;
-	private static Connection con = optimizedConnectionTest.getConnection();
+	public static Connection con = optimizedConnectionTest.getConnection();
 	private static String shopName = getShopName("");
 	ImageIcon image;
+	private static String hashKey = "";
 	
 	public static String getShopName(String name) {
 		String shop = "";
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("networkconfig.dat"));
+			hashKey = br.readLine();
 			br.readLine();
 			br.readLine();
 			br.readLine();
-			shop = br.readLine();
+			br.readLine();
+			br.readLine();
+			shop = decrypt(br.readLine(), hashKey);
 			br.close();
 			
 		} catch(Exception e) {
@@ -64,6 +72,15 @@ public class mainScreenRestraint {
 		
 		return shop;
 	}
+	
+	//does the decryption
+    public static String decrypt(String encrypted, String encryptionKey) throws Exception {
+    	Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes(), "AES");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+        return new String(decryptedBytes);
+    }
 	
 	/**
 	 * Launch the application.
@@ -210,6 +227,17 @@ public class mainScreenRestraint {
 		lblCountDown.setForeground(Color.YELLOW);
 		lblCountDown.setBounds(0, 0, 241, 23);
 		panel_2.add(lblCountDown);
+		
+		JButton btnPowerOptions = new JButton("P");
+		btnPowerOptions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				powerOptions powOps = new powerOptions();
+				powOps.setVisible(true);
+			}
+		});
+		btnPowerOptions.setFont(new Font("Tahoma", Font.BOLD, 11));
+		btnPowerOptions.setBounds(270, 301, 53, 23);
+		panel.add(btnPowerOptions);
 		
 		lblNewLabel = new JLabel("New label");
 		//ppull yung image dito galing sa res folder.

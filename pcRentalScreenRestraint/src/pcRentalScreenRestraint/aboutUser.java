@@ -99,7 +99,7 @@ public class aboutUser extends JFrame {
 			System.out.println(user);
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Statement st = con.createStatement();
-			String query = "select username, email, phonenum, balance from user_accounts where username = 'beary_johny'";
+			String query = "select username, email, phonenum, balance from user_accounts where username = '" + user +"'";
 			ResultSet rs = st.executeQuery(query);
 			
 			String username, email, number, balance;

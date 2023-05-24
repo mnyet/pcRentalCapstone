@@ -1,4 +1,4 @@
-package pcRentalCapstone;
+package pcRentalDatabaseSetup;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -59,7 +59,7 @@ public class optimizedConnectionTest {
 			getDataFromFile();
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			System.out.println(dbNetwork + dbDatabaseName + dbUsername + dbPassword );
-			con = DriverManager.getConnection("jdbc:mysql://" + dbNetwork + "/" + dbDatabaseName +"", "" + dbUsername + "", "" + dbPassword + "");
+			con = DriverManager.getConnection("jdbc:mysql://" + dbNetwork + "/", "" + dbUsername + "", "" + dbPassword + "");
 		}
 		catch(Exception e) {
 			e.printStackTrace();
