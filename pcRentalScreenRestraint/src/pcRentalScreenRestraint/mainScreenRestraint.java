@@ -48,7 +48,6 @@ public class mainScreenRestraint {
 	private JLabel lblPasswordCheck;
 	private static JPanel panel_1;
 	private static JLabel lblCountDown;
-	public static Connection con = optimizedConnectionTest.getConnection();
 	private static String shopName = getShopName("");
 	ImageIcon image;
 	private static String hashKey = "";
@@ -295,6 +294,7 @@ public class mainScreenRestraint {
 		@Override
 		public void run() {
 			try {
+				 Connection con = optimizedConnectionTest.getConnection();
 				 Class.forName("com.mysql.cj.jdbc.Driver");
 				 Statement stmt = con.createStatement();
 				 String query = "select username, pass from user_accounts where username = '" + textFieldUsername.getText() + "' and pass = md5('" + textFieldPassword.getText() +"'); ";

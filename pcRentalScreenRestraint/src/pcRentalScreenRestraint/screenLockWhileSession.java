@@ -26,7 +26,7 @@ public class screenLockWhileSession extends JFrame {
 	private JButton btnUnlock;
 	private JPanel panel_1;
 	private JLabel lblNewLabel;
-	private static Connection con = mainScreenRestraint.con;
+	private static Connection con = optimizedConnectionTest.getConnection();
 
 	/**
 	 * Launch the application.

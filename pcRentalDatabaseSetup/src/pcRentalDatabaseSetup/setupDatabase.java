@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -74,10 +76,17 @@ public class setupDatabase extends JFrame {
 	 * Create the frame.
 	 */
 	public setupDatabase() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		readDatabaseName();
 		setResizable(false);
 		setTitle("Setup Database for pcrental");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 362, 165);
+		setBounds(100, 100, 362, 195);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -95,7 +104,6 @@ public class setupDatabase extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					readDatabaseName();
 					System.out.println(dbNameRead);
 					Statement stmt = con.createStatement();
 					//String dbName = dbNameRead;
@@ -144,7 +152,6 @@ public class setupDatabase extends JFrame {
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					readDatabaseName();
 					System.out.println(dbNameRead);
 					Statement stmt = con.createStatement();
 					String query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + dbNameRead + "'";
@@ -165,6 +172,10 @@ public class setupDatabase extends JFrame {
 		});
 		btnDelete.setBounds(186, 65, 122, 26);
 		contentPane.add(btnDelete);
+		JLabel lblDatabaseDetails = new JLabel("Database Name: " + dbNameRead);
+		lblDatabaseDetails.setHorizontalAlignment(SwingConstants.LEFT);
+		lblDatabaseDetails.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblDatabaseDetails.setBounds(33, 107, 275, 26);
+		contentPane.add(lblDatabaseDetails);
 	}
-
 }
